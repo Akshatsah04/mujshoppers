@@ -292,16 +292,14 @@ export default function BestSellers() {
       <div className="relative z-10 mx-auto w-full max-w-[1600px]">
         {/* Header Section */}
         <div ref={headingRef} className="relative z-20 mx-auto max-w-2xl text-center mb-12">
-          <p className="text-xs sm:text-sm font-extrabold uppercase tracking-[0.25em] text-emerald-600">
-            OUR COLLECTION
-          </p>
+         
 
           <h2 className="mt-2 text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 tracking-tight leading-tight">
             Featured Products
           </h2>
 
           <p className="mt-3 text-sm sm:text-base font-medium text-slate-500">
-            Explore our most popular items loved by customers
+            Most loved items by the customers
           </p>
         </div>
 
