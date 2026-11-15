@@ -1,17 +1,18 @@
 import User from "../models/Users.js";
 import Product from "../models/Product.js";
 
+const cartPopulateOptions = {
+    path: "cart.product",
+    populate: {
+        path: "seller",
+        select: "firstName lastName college branch year whatsappNumber profilePic"
+    }
+};
+
 // Get user's cart
 export const getCart = async (req, res, next) => {
     try {
-        const user = await User.findById(req.userId)
-            .populate({
-                path: "cart.product",
-                populate: {
-                    path: "seller",
-                    select: "name college branch year phone profilePic"
-                }
-            });
+        const user = await User.findById(req.userId).populate(cartPopulateOptions);
 
         if (!user) {
             return res.status(404).json({
@@ -20,9 +21,21 @@ export const getCart = async (req, res, next) => {
             });
         }
 
+        const validCart = user.cart.filter((item) => item.product !== null);
+
+        // Clean up orphaned items (if any product was deleted) in DB
+        if (validCart.length !== user.cart.length) {
+            await User.findByIdAndUpdate(req.userId, {
+                cart: validCart.map((item) => ({
+                    product: item.product._id,
+                    quantity: item.quantity || 1
+                }))
+            });
+        }
+
         res.status(200).json({
             success: true,
-            cart: user.cart
+            cart: validCart
         });
 
     } catch (error) {
@@ -69,13 +82,17 @@ export const addToCart = async (req, res, next) => {
         }
 
         const alreadyInCart = user.cart.some(
-            (item) => item.product.toString() === productId
+            (item) => item.product && item.product.toString() === productId
         );
 
         if (alreadyInCart) {
+            const updatedUser = await User.findById(req.userId).populate(cartPopulateOptions);
+            const validCart = updatedUser.cart.filter((item) => item.product !== null);
+
             return res.status(200).json({
                 success: true,
-                message: "Product is already in your cart"
+                message: "Product is already in your cart",
+                cart: validCart
             });
         }
 
@@ -87,19 +104,13 @@ export const addToCart = async (req, res, next) => {
         await user.save();
 
         // Get the updated cart with product + seller details
-        const updatedUser = await User.findById(req.userId)
-            .populate({
-                path: "cart.product",
-                populate: {
-                    path: "seller",
-                    select: "name college branch year phone profilePic"
-                }
-            });
+        const updatedUser = await User.findById(req.userId).populate(cartPopulateOptions);
+        const validCart = updatedUser.cart.filter((item) => item.product !== null);
 
         res.status(200).json({
             success: true,
             message: "Product added to cart",
-            cart: updatedUser.cart
+            cart: validCart
         });
 
     } catch (error) {
@@ -122,15 +133,19 @@ export const removeFromCart = async (req, res, next) => {
         }
 
         user.cart = user.cart.filter(
-            (item) => item.product.toString() !== productId
+            (item) => item.product && item.product.toString() !== productId
         );
 
         await user.save();
 
+        // Populate updated cart so frontend receives complete product objects
+        const updatedUser = await User.findById(req.userId).populate(cartPopulateOptions);
+        const validCart = updatedUser.cart.filter((item) => item.product !== null);
+
         res.status(200).json({
             success: true,
             message: "Product removed from cart",
-            cart: user.cart
+            cart: validCart
         });
 
     } catch (error) {

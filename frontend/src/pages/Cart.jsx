@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import { useCart } from "../context/CartContext";
+import { createWhatsAppLink, getProductInquiryMessage } from "../utils/whatsapp";
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -32,6 +33,24 @@ export default function Cart() {
     }
 
     return `₹${numericPrice.toLocaleString("en-IN")}`;
+  };
+
+  const handleContactSeller = (product) => {
+    if (!product) return;
+
+    const phone = product.seller?.whatsappNumber;
+
+    if (!phone) {
+      alert("Seller has not added a WhatsApp number.");
+      return;
+    }
+
+    const whatsappUrl = createWhatsAppLink(
+      phone,
+      getProductInquiryMessage(product)
+    );
+
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -153,9 +172,11 @@ export default function Cart() {
                             {item.product.category}
                           </p>
 
-                          <h2 className="mt-1 line-clamp-2 text-base font-black leading-6 text-slate-950 sm:text-lg">
-                            {item.product.title}
-                          </h2>
+                          <Link to={`/product/${item.product._id}`} className="group/title block">
+                            <h2 className="mt-1 line-clamp-2 text-base font-black leading-6 text-slate-950 sm:text-lg transition-colors group-hover/title:text-emerald-600">
+                              {item.product.title}
+                            </h2>
+                          </Link>
 
                         </div>
 
@@ -216,17 +237,15 @@ export default function Cart() {
 
                       {/* Contact Seller */}
                       <button
-                        onClick={() => {
-                          console.log("Contact seller:", item.product.seller);
-                        }}
+                        onClick={() => handleContactSeller(item.product)}
                         className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-950 text-sm font-bold text-white transition hover:bg-emerald-600"
                       >
                         <MessageCircle size={17} />
 
                         Contact{" "}
-                        {item.product.seller
-                        ? `${item.product.seller.firstName} ${item.product.seller.lastName || ""}`.trim()
-                        : "Seller"}
+                        {item.product?.seller
+                          ? `${item.product.seller.firstName || ""} ${item.product.seller.lastName || ""}`.trim() || "Seller"
+                          : "Seller"}
                       </button>
 
                     </div>
@@ -334,7 +353,7 @@ export default function Cart() {
 
                   <div>
                     <p className="text-sm font-bold text-slate-900">
-                      CampusKart
+                      MujShoppers
                     </p>
 
                     <p className="text-xs text-slate-400">

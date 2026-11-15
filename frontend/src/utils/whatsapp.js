@@ -35,7 +35,9 @@ export function createWhatsAppLink(phone, message = "") {
 export function getProductInquiryMessage(product) {
     const title = product?.title || product?.name || "this item";
     const price = product?.price ? `₹${Number(product.price).toLocaleString("en-IN")}` : "";
-    const sellerName = product?.seller?.name ? product.seller.name.split(" ")[0] : "there";
+    const sellerName = product?.seller?.firstName
+        ? product.seller.firstName
+        : (product?.seller?.name ? product.seller.name.split(" ")[0] : "there");
 
-    return `Hey ${sellerName}! I saw your listing for "${title}" ${price ? `(${price})` : ""} on CampusKart. Is it still available?`;
+    return `Hey ${sellerName}! I saw your listing for "${title}" ${price ? `(${price})` : ""} on MujShoppers. Is it still available?`;
 }

@@ -1,18 +1,18 @@
 import User from "../models/Users.js";
 import Product from "../models/Product.js";
 
+const wishlistPopulateOptions = {
+    path: "wishlist",
+    populate: {
+        path: "seller",
+        select: "firstName lastName college branch year whatsappNumber profilePic"
+    }
+};
 
 // Get user's wishlist
 export const getWishlist = async (req, res, next) => {
     try {
-        const user = await User.findById(req.userId)
-            .populate({
-                path: "wishlist",
-                populate: {
-                    path: "seller",
-                    select: "name college branch year phone profilePic"
-                }
-            });
+        const user = await User.findById(req.userId).populate(wishlistPopulateOptions);
 
         if (!user) {
             return res.status(404).json({
@@ -21,9 +21,18 @@ export const getWishlist = async (req, res, next) => {
             });
         }
 
+        const validWishlist = user.wishlist.filter((item) => item !== null);
+
+        // Clean up orphaned items (if any product was deleted) in DB
+        if (validWishlist.length !== user.wishlist.length) {
+            await User.findByIdAndUpdate(req.userId, {
+                wishlist: validWishlist.map((item) => item._id)
+            });
+        }
+
         res.status(200).json({
             success: true,
-            wishlist: user.wishlist
+            wishlist: validWishlist
         });
 
     } catch (error) {
@@ -63,13 +72,17 @@ export const addToWishlist = async (req, res, next) => {
         }
 
         const alreadyInWishlist = user.wishlist.some(
-            (id) => id.toString() === productId
+            (id) => id && id.toString() === productId
         );
 
         if (alreadyInWishlist) {
+            const updatedUser = await User.findById(req.userId).populate(wishlistPopulateOptions);
+            const validWishlist = updatedUser.wishlist.filter((item) => item !== null);
+
             return res.status(200).json({
                 success: true,
-                message: "Product is already in your wishlist"
+                message: "Product is already in your wishlist",
+                wishlist: validWishlist
             });
         }
 
@@ -77,10 +90,14 @@ export const addToWishlist = async (req, res, next) => {
 
         await user.save();
 
+        // Populate updated wishlist so frontend gets complete product objects
+        const updatedUser = await User.findById(req.userId).populate(wishlistPopulateOptions);
+        const validWishlist = updatedUser.wishlist.filter((item) => item !== null);
+
         res.status(200).json({
             success: true,
             message: "Product added to wishlist",
-            wishlist: user.wishlist
+            wishlist: validWishlist
         });
 
     } catch (error) {
@@ -104,15 +121,19 @@ export const removeFromWishlist = async (req, res, next) => {
         }
 
         user.wishlist = user.wishlist.filter(
-            (id) => id.toString() !== productId
+            (id) => id && id.toString() !== productId
         );
 
         await user.save();
 
+        // Populate updated wishlist so frontend gets complete product objects
+        const updatedUser = await User.findById(req.userId).populate(wishlistPopulateOptions);
+        const validWishlist = updatedUser.wishlist.filter((item) => item !== null);
+
         res.status(200).json({
             success: true,
             message: "Product removed from wishlist",
-            wishlist: user.wishlist
+            wishlist: validWishlist
         });
 
     } catch (error) {

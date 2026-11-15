@@ -14,6 +14,7 @@ import {
 
 import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
+import { createWhatsAppLink, getProductInquiryMessage } from "../utils/whatsapp";
 
 export default function Wishlist() {
   const navigate = useNavigate();
@@ -33,6 +34,23 @@ export default function Wishlist() {
 
   const handleAddToCart = (item) => {
     addToCart(item);
+  };
+  const handleContactSeller = (item) => {
+    if (!item) return;
+
+    const phone = item.seller?.whatsappNumber;
+
+    if (!phone) {
+      alert("Seller has not added a WhatsApp number.");
+      return;
+    }
+
+    const whatsappUrl = createWhatsAppLink(
+      phone,
+      getProductInquiryMessage(item)
+    );
+
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -126,160 +144,178 @@ export default function Wishlist() {
 
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
 
-              {wishlistItems.map((item) => (
+              {wishlistItems.map((item) => {
+                const productId = item._id || item.id;
+                const imageUrl =
+                  item.images?.[0]?.url ||
+                  item.images?.[0] ||
+                  item.image ||
+                  "/categories/electronics.PNG";
 
-                <article
-                  key={item.id || item._id}
-                  className="group overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
-                >
+                return (
+                  <article
+                    key={productId}
+                    className="group overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+                  >
 
-                  {/* =================================================
-                      IMAGE
-                  ================================================== */}
+                    {/* =================================================
+                        IMAGE
+                    ================================================== */}
 
-                  <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                    <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
 
-                    <img
-                      src={item.images?.[0]?.url}
-                      alt={item.title}
-                      className="h-full w-full object-contain p-8 transition duration-500 group-hover:scale-105"
-                    />
+                      <Link
+                        to={`/product/${productId}`}
+                        className="block h-full w-full cursor-pointer"
+                      >
+                        <img
+                          src={imageUrl}
+                          alt={item.title}
+                          className="h-full w-full object-contain p-8 transition duration-500 group-hover:scale-105"
+                        />
+                      </Link>
 
-                    {/* Wishlist button */}
+                      {/* Wishlist button */}
 
-                    <button
-                      onClick={() =>
-                        removeFromWishlist(
-                          item.id || item._id
-                        )
-                      }
-                      className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-red-500 shadow-md transition hover:bg-red-50"
-                      aria-label="Remove from wishlist"
-                    >
-                      <Heart
-                        size={19}
-                        fill="currentColor"
-                      />
-                    </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          removeFromWishlist(productId);
+                        }}
+                        className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-red-500 shadow-md transition hover:bg-red-50"
+                        aria-label="Remove from wishlist"
+                      >
+                        <Heart
+                          size={19}
+                          fill="currentColor"
+                        />
+                      </button>
 
-                    {/* Condition */}
+                      {/* Condition */}
 
-                    <span className="absolute bottom-4 left-4 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-bold text-slate-700 shadow-sm">
-                      {item.condition}
-                    </span>
-
-                  </div>
-
-                  {/* =================================================
-                      DETAILS
-                  ================================================== */}
-
-                  <div className="p-5">
-
-                    {/* Category */}
-
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-600">
-                      {item.category}
-                    </p>
-
-                    {/* Title */}
-
-                    <h2 className="mt-1 line-clamp-2 min-h-[48px] text-lg font-black leading-6 text-slate-950">
-                      {item.title}
-                    </h2>
-
-                    {/* Price */}
-
-                    <p className="mt-3 text-2xl font-black text-slate-950">
-                      {formatPrice(item.price)}
-                    </p>
-
-                    {/* Seller */}
-
-                    <div className="mt-4 border-t border-slate-100 pt-4">
-
-                      <div className="flex items-center justify-between gap-3">
-
-                        <div className="min-w-0">
-
-                          <p className="text-xs text-slate-400">
-                            Listed by
-                          </p>
-
-                          <p className="truncate text-sm font-bold text-slate-800">
-                            {item.seller?.firstName ||
-                              "Campus Seller"}
-                          </p>
-
-                        </div>
-
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs font-black text-white">
-                          {item.seller?.firstName
-                            ?.charAt(0)
-                            ?.toUpperCase() || "S"}
-                        </div>
-
-                      </div>
-
-                      <div className="mt-2 flex items-center gap-1.5 text-[11px] text-slate-400">
-                        <MapPin size={12} />
-
-                        <span className="truncate">
-                          {item.seller?.college ||
-                            "Manipal University Jaipur"}
-                        </span>
-                      </div>
+                      <span className="pointer-events-none absolute bottom-4 left-4 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-bold text-slate-700 shadow-sm">
+                        {item.condition}
+                      </span>
 
                     </div>
 
                     {/* =================================================
-                        ACTIONS
+                        DETAILS
                     ================================================== */}
 
-                    <div className="mt-5 grid grid-cols-2 gap-2">
+                    <div className="p-5">
 
-                      {/* Contact Seller */}
+                      {/* Category */}
 
-                      <button
-                        onClick={() =>
-                          console.log(
-                            "Contact seller:",
-                            item.seller
-                          )
-                        }
-                        className="flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-600">
+                        {item.category}
+                      </p>
+
+                      {/* Title */}
+
+                      <Link
+                        to={`/product/${productId}`}
+                        className="group/title block cursor-pointer"
                       >
-                        <MessageCircle size={16} />
-                        Contact
-                      </button>
+                        <h2 className="mt-1 line-clamp-2 min-h-[48px] text-lg font-black leading-6 text-slate-950 transition-colors group-hover/title:text-emerald-600">
+                          {item.title}
+                        </h2>
+                      </Link>
 
-                      {/* Add to Cart */}
+                      {/* Price */}
 
-                      <button
-                        onClick={() =>
-                          handleAddToCart(item)
-                        }
-                        disabled={isInCart(
-                          item.id || item._id
-                        )}
-                        className="flex h-11 items-center justify-center gap-2 rounded-xl bg-slate-950 text-xs font-bold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+                      <Link
+                        to={`/product/${productId}`}
+                        className="mt-3 block cursor-pointer"
                       >
-                        <ShoppingCart size={16} />
+                        <p className="text-2xl font-black text-slate-950 transition-colors hover:text-emerald-600">
+                          {formatPrice(item.price)}
+                        </p>
+                      </Link>
 
-                        {isInCart(
-                          item.id || item._id
-                        )
-                          ? "In Cart"
-                          : "Add to Cart"}
-                      </button>
+                      {/* Seller */}
+
+                      <div className="mt-4 border-t border-slate-100 pt-4">
+
+                        <div className="flex items-center justify-between gap-3">
+
+                          <div className="min-w-0">
+
+                            <p className="text-xs text-slate-400">
+                              Listed by
+                            </p>
+
+                            <p className="truncate text-sm font-bold text-slate-800">
+                              {item.seller
+                                ? `${item.seller.firstName || ""} ${item.seller.lastName || ""}`.trim() ||
+                                  "Campus Seller"
+                                : "Campus Seller"}
+                            </p>
+
+                          </div>
+
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs font-black text-white">
+                            {item.seller?.firstName
+                              ?.charAt(0)
+                              ?.toUpperCase() || "S"}
+                          </div>
+
+                        </div>
+
+                        <div className="mt-2 flex items-center gap-1.5 text-[11px] text-slate-400">
+                          <MapPin size={12} />
+
+                          <span className="truncate">
+                            {item.seller?.college ||
+                              "Manipal University Jaipur"}
+                          </span>
+                        </div>
+
+                      </div>
+
+                      {/* =================================================
+                          ACTIONS
+                      ================================================== */}
+
+                      <div className="mt-5 grid grid-cols-2 gap-2">
+
+                        {/* Contact Seller */}
+
+                        <button
+                          type="button"
+                          onClick={() => handleContactSeller(item)}
+                          className="flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
+                        >
+                          <MessageCircle size={16} />
+                          Contact
+                        </button>
+
+                        {/* Add to Cart */}
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleAddToCart(item)
+                          }
+                          disabled={isInCart(productId)}
+                          className="flex h-11 items-center justify-center gap-2 rounded-xl bg-slate-950 text-xs font-bold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+                        >
+                          <ShoppingCart size={16} />
+
+                          {isInCart(productId)
+                            ? "In Cart"
+                            : "Add to Cart"}
+                        </button>
+
+                      </div>
 
                     </div>
 
-                  </div>
-
-                </article>
-
-              ))}
+                  </article>
+                );
+              })}
 
             </div>
 

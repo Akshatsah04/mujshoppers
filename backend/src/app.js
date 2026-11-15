@@ -59,7 +59,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.get("/api/v1/health", (req, res) => {
     res.status(200).json({
         success: true,
-        message: "CampusKart API is healthy and operational",
+        message: "MujShoppers API is healthy and operational",
         timestamp: new Date().toISOString()
     });
 });
