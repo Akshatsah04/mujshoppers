@@ -3,7 +3,6 @@ import {
   Camera,
   Check,
   ChevronRight,
-  Eye,
   Heart,
   LogOut,
   MapPin,
@@ -11,7 +10,6 @@ import {
   Plus,
   Settings,
   ShieldCheck,
-  Star,
   Tag,
   Trash2,
   BriefcaseBusiness,
@@ -214,9 +212,9 @@ export default function Profile() {
 
                   {/* Avatar */}
                   <div className="relative shrink-0 self-center sm:self-start">
-                    {user.avatar ? (
+                    {user.profilePic || user.avatar ? (
                       <img
-                        src={user.avatar}
+                        src={user.profilePic || user.avatar}
                         alt={`${user.firstName || ""} ${user.lastName || ""}`.trim()}
                         className="h-32 w-32 rounded-full object-cover shadow-lg sm:h-36 sm:w-36"
                       />
@@ -255,7 +253,16 @@ export default function Profile() {
                       <p className="mt-1 text-sm text-slate-500">
                         {user.branch}
                         {user.branch && user.year && <span className="mx-2">•</span>}
-                        {user.year && `${user.year} Year`}
+                        {user.year &&
+                          `${user.year}${
+                            Number(user.year) === 1
+                              ? "st"
+                              : Number(user.year) === 2
+                              ? "nd"
+                              : Number(user.year) === 3
+                              ? "rd"
+                              : "th"
+                          } Year`}
                       </p>
                     )}
 
@@ -660,12 +667,12 @@ export default function Profile() {
 
 function EditProfileModal({ user, onClose, onSaved }) {
   const [form, setForm] = useState({
-    name: user.name || "",
+    name: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
     college: user.college || "",
     branch: user.branch || "",
     year: user.year || "",
     bio: user.bio || "",
-    whatsapp: user.whatsapp || "",
+    whatsapp: user.whatsappNumber || "",
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -746,10 +753,10 @@ function EditProfileModal({ user, onClose, onSaved }) {
                 className="mt-2 h-12 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
               >
                 <option value="">Select Year</option>
-                <option value="1st">1st Year</option>
-                <option value="2nd">2nd Year</option>
-                <option value="3rd">3rd Year</option>
-                <option value="4th">4th Year</option>
+                <option value={1}>1st Year</option>
+                <option value={2}>2nd Year</option>
+                <option value={3}>3rd Year</option>
+                <option value={4}>4th Year</option>
               </select>
             </FormField>
           </div>

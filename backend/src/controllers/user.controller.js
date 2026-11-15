@@ -156,17 +156,46 @@ export const updateUserProfile = async (req, res, next) => {
         const {
             firstName,
             lastName,
+            name,
+            college,
             branch,
             year,
             whatsappNumber,
+            whatsapp,
+            phone,
+            bio,
             profilePic
         } = req.body;
 
-        if (firstName !== undefined) user.firstName = firstName.trim();
-        if (lastName !== undefined) user.lastName = lastName.trim();
+        // Support both firstName/lastName and combined name
+        if (firstName !== undefined) {
+            user.firstName = firstName.trim();
+        } else if (name !== undefined) {
+            const parts = name.trim().split(" ");
+            user.firstName = parts[0] || user.firstName;
+            user.lastName = parts.slice(1).join(" ") || user.lastName;
+        }
+
+        if (lastName !== undefined) {
+            user.lastName = lastName.trim();
+        }
+
+        if (college !== undefined) user.college = college.trim();
         if (branch !== undefined) user.branch = branch.trim();
-        if (year !== undefined) user.year = Number(year);
-        if (whatsappNumber !== undefined) user.whatsappNumber = whatsappNumber.trim();
+
+        if (year !== undefined && year !== null && year !== "") {
+            const parsedYear = parseInt(String(year).replace(/\D/g, ""), 10);
+            if (!isNaN(parsedYear)) {
+                user.year = parsedYear;
+            }
+        }
+
+        const resolvedWhatsapp = whatsappNumber || whatsapp || phone;
+        if (resolvedWhatsapp !== undefined && resolvedWhatsapp !== null) {
+            user.whatsappNumber = resolvedWhatsapp.trim();
+        }
+
+        if (bio !== undefined) user.bio = bio.trim();
         if (profilePic !== undefined) user.profilePic = profilePic;
 
         const updatedUser = await user.save();
@@ -176,13 +205,21 @@ export const updateUserProfile = async (req, res, next) => {
             message: "Profile updated successfully",
             user: {
                 id: updatedUser._id,
-                name: updatedUser.name,
+                _id: updatedUser._id,
+                firstName: updatedUser.firstName,
+                lastName: updatedUser.lastName,
+                registrationNumber: updatedUser.registrationNumber,
                 email: updatedUser.email,
                 college: updatedUser.college,
                 branch: updatedUser.branch,
                 year: updatedUser.year,
-                phone: updatedUser.phone,
-                profilePic: updatedUser.profilePic
+                whatsappNumber: updatedUser.whatsappNumber,
+                bio: updatedUser.bio || "",
+                profilePic: updatedUser.profilePic,
+                cart: updatedUser.cart,
+                wishlist: updatedUser.wishlist,
+                createdAt: updatedUser.createdAt,
+                updatedAt: updatedUser.updatedAt
             }
         });
     } catch (error) {

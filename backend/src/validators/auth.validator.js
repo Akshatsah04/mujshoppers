@@ -63,14 +63,22 @@ export const updateProfileValidator = [
     body("firstName")
         .optional()
         .trim()
-        .isLength({ min: 2, max: 30 })
-        .withMessage("First name must be between 2 and 30 characters"),
+        .isLength({ min: 1, max: 50 })
+        .withMessage("First name must be between 1 and 50 characters"),
 
     body("lastName")
         .optional()
         .trim()
-        .isLength({ min: 2, max: 30 })
-        .withMessage("Last name must be between 2 and 30 characters"),
+        .isLength({ min: 1, max: 50 })
+        .withMessage("Last name must be between 1 and 50 characters"),
+
+    body("name")
+        .optional()
+        .trim(),
+
+    body("college")
+        .optional()
+        .trim(),
 
     body("branch")
         .optional()
@@ -78,6 +86,11 @@ export const updateProfileValidator = [
 
     body("year")
         .optional()
+        .customSanitizer((val) => {
+            if (val === undefined || val === null || val === "") return val;
+            const parsed = parseInt(String(val).replace(/\D/g, ""), 10);
+            return isNaN(parsed) ? val : parsed;
+        })
         .isInt({ min: 1, max: 6 })
         .withMessage("Year must be between 1 and 6"),
 
@@ -85,5 +98,21 @@ export const updateProfileValidator = [
         .optional()
         .trim()
         .matches(/^[+]?[0-9\s-]{10,15}$/)
-        .withMessage("Please enter a valid WhatsApp number")
+        .withMessage("Please enter a valid WhatsApp number"),
+
+    body("whatsapp")
+        .optional()
+        .trim()
+        .matches(/^[+]?[0-9\s-]{10,15}$/)
+        .withMessage("Please enter a valid WhatsApp number"),
+
+    body("bio")
+        .optional()
+        .trim()
+        .isLength({ max: 300 })
+        .withMessage("Bio cannot exceed 300 characters"),
+
+    body("profilePic")
+        .optional()
+        .trim()
 ];

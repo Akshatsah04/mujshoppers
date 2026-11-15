@@ -51,7 +51,7 @@ export default function Hero() {
     },
     {
       id: 5,
-      title: "Textbooks",
+      title: "Books",
       gradient: "from-[#556B2F] to-[#7B9A42]", // Dark Olive Green
       tag: {
         text: "DSA Guides",

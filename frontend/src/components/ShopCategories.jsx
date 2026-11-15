@@ -14,7 +14,7 @@ image: "/categories_icon/electronics_icon.png",
 description: "Laptops, gadgets & more",
 },
 {
-name: "Textbooks",
+name: "Books",
 image: "/categories_icon/textbooks_icon.png",
 description: "Books for every course",
 },
