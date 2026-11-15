@@ -32,7 +32,7 @@ export default function Footer() {
 
             <div className="md:col-span-1">
               <h2 className="max-w-[320px] text-xl font-black leading-tight text-slate-900 sm:text-2xl">
-                mujshoppers is a student first marketplace built for campus life.
+                MujShoppers is a student first marketplace built for campus life.
               </h2>
 
               <p className="mt-4 max-w-[300px] text-sm leading-6 text-slate-500">

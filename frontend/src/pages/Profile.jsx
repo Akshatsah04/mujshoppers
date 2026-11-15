@@ -115,7 +115,9 @@ export default function Profile() {
   }, [user, fetchProducts]);
 
   // Derived lists
-  const activeListings = products.filter((p) => p.status === "active");
+  const activeListings = products.filter(
+    (p) => p.status === "available" || p.status === "active"
+  );
   const soldListings = products.filter((p) => p.status === "sold");
   const filteredListings =
     activeListingFilter === "All"
@@ -126,7 +128,9 @@ export default function Profile() {
 
   // Mark as sold / reactivate
   const handleToggleStatus = async (product) => {
-    const newStatus = product.status === "active" ? "sold" : "active";
+    const isCurrentlyActive =
+      product.status === "available" || product.status === "active";
+    const newStatus = isCurrentlyActive ? "sold" : "available";
     setCardActions((prev) => ({ ...prev, [product._id]: "marking-sold" }));
     try {
       await updateProductStatus(product._id, newStatus);
@@ -333,10 +337,7 @@ export default function Profile() {
         </section>
 
         {/* MAIN DASHBOARD */}
-        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_310px]">
-
-          {/* LEFT */}
-          <div className="min-w-0">
+        <div className="mt-6">
 
             {/* Tabs */}
             <div className="overflow-x-auto border-b border-slate-200">
@@ -474,7 +475,7 @@ export default function Profile() {
                   <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
                     {wishlistItems.map((item) => {
                       const productId = item._id || item.id;
-                      const imageUrl = item.image || null;
+                      const imageUrl = item.images?.[0]?.url || null;
                       return (
                         <div
                           key={productId}
@@ -586,80 +587,6 @@ export default function Profile() {
                 </div>
               </section>
             )}
-
-          </div>
-
-          {/* RIGHT SIDEBAR */}
-          <aside className="space-y-5">
-
-            {/* Verified badge */}
-            <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="rounded-2xl bg-emerald-50 p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-                    <ShieldCheck size={23} />
-                  </div>
-                  <div>
-                    <p className="text-sm font-black text-emerald-800">Verified Student</p>
-                    <p className="mt-0.5 text-xs text-emerald-700/70">
-                      Your college is verified
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-5 space-y-3">
-                <VerificationItem text="Student account" />
-                {user.college && <VerificationItem text={user.college} />}
-                <VerificationItem text="Active student" />
-              </div>
-
-              <p className="mt-5 text-xs leading-5 text-slate-500">
-                Verified students help build a safer campus community.
-              </p>
-            </div>
-
-            {/* Quick actions */}
-            <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-              <h3 className="text-lg font-black text-slate-950">Quick Actions</h3>
-              <div className="mt-4 space-y-2">
-                <Link
-                  to="/sell"
-                  className="flex items-center gap-3 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-emerald-700"
-                >
-                  <Plus size={18} />
-                  List a New Item
-                </Link>
-                <Link
-                  to="/shop"
-                  className="flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
-                >
-                  <Tag size={18} />
-                  Browse Products
-                </Link>
-              </div>
-            </div>
-
-            {/* Account shortcuts */}
-            <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-              <h3 className="text-lg font-black text-slate-950">Account</h3>
-              <div className="mt-3 divide-y divide-slate-100">
-                <SidebarSetting text="Edit Profile" onClick={() => { setShowEditProfile(true); }} />
-                <SidebarSetting text="College & Verification" />
-                <SidebarSetting text="Privacy & Security" />
-                <SidebarSetting text="Help & Support" />
-              </div>
-
-              <button
-                onClick={handleLogout}
-                className="mt-3 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm font-semibold text-red-500 hover:bg-red-50"
-              >
-                <LogOut size={16} />
-                Logout
-              </button>
-            </div>
-
-          </aside>
 
         </div>
 
@@ -1024,28 +951,6 @@ function ProfileTab({ active, icon, label, onClick }) {
   );
 }
 
-function VerificationItem({ text }) {
-  return (
-    <div className="flex items-center gap-2.5">
-      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
-        <Check size={12} strokeWidth={3} />
-      </div>
-      <span className="text-xs font-medium text-slate-600">{text}</span>
-    </div>
-  );
-}
-
-function SidebarSetting({ text, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex w-full items-center justify-between py-3 text-left text-xs font-medium text-slate-600 hover:text-slate-950"
-    >
-      <span>{text}</span>
-      <ChevronRight size={15} className="text-slate-300" />
-    </button>
-  );
-}
 
 function SettingsRow({ title, description, onClick }) {
   return (

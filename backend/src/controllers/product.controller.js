@@ -288,7 +288,9 @@ export const updateProduct = async (req, res, next) => {
 // ==========================================
 export const updateProductStatus = async (req, res, next) => {
     try {
-        const { status } = req.body;
+        let { status } = req.body;
+
+        if (status === "active") status = "available";
 
         if (!["available", "sold"].includes(status)) {
             return res.status(400).json({
