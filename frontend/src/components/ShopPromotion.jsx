@@ -7,7 +7,7 @@ export default function ShopPromotion() {
         <div className="group relative overflow-hidden rounded-3xl shadow-sm">
           <img
             src="/banners/shop-promotion.png"
-            alt="CampusKart - Everything you need for a better campus life"
+            alt="MujShoppers - Everything you need for a better campus life"
             className="block h-auto w-full object-cover transition-transform duration-700 group-hover:scale-[1.01]"
           />
         </div>

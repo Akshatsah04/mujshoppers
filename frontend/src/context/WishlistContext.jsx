@@ -102,9 +102,7 @@ export function WishlistProvider({ children }) {
       }
 
       if (data.wishlist) {
-        // POST currently returns IDs.
-        // Fetch again so frontend gets complete products.
-        await fetchWishlist();
+        setWishlistItems(data.wishlist);
       } else {
         await fetchWishlist();
       }
@@ -138,7 +136,11 @@ export function WishlistProvider({ children }) {
         throw new Error(data.message || "Failed to remove from wishlist");
       }
 
-      await fetchWishlist();
+      if (data.wishlist) {
+        setWishlistItems(data.wishlist);
+      } else {
+        await fetchWishlist();
+      }
 
     } catch (error) {
       console.error("Failed to remove from wishlist:", error);

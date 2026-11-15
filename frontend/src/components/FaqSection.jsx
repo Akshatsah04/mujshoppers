@@ -15,7 +15,7 @@ export default function FaqSection() {
 
   const faqs = [
     {
-      question: "How do I buy items on CampusKart?",
+      question: "How do I buy items on MujShoppers?",
       answer:
         "Simply browse listings, select a product, and click to chat directly with the verified student seller on WhatsApp to arrange a convenient campus pickup.",
     },
@@ -27,7 +27,7 @@ export default function FaqSection() {
     {
       question: "Is it free to list and sell items?",
       answer:
-        "Yes, listing products on CampusKart is 100% free for all students. There are zero commission fees or hidden charges.",
+        "Yes, listing products on MujShoppers is 100% free for all students. There are zero commission fees or hidden charges.",
     },
     {
       question: "What items can I sell on the platform?",

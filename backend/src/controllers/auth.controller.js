@@ -161,7 +161,7 @@ export const startSignup = async (req, res, next) => {
 
                 body: JSON.stringify({
                     sender: {
-                        name: process.env.BREVO_SENDER_NAME,
+                        name: process.env.BREVO_SENDER_NAME || "MujShoppers",
                         email: process.env.BREVO_SENDER_EMAIL
                     },
 

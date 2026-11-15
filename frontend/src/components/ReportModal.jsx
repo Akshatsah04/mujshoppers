@@ -92,7 +92,7 @@ export default function ReportModal({ productId, productTitle, isOpen, onClose }
                             Report Submitted
                         </h4>
                         <p className="mt-1 text-xs text-slate-500">
-                            Thank you for helping keep the CampusKart community safe.
+                            Thank you for helping keep the MujShoppers community safe.
                         </p>
                     </div>
                 ) : (
