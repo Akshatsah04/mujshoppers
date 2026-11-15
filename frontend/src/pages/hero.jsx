@@ -465,8 +465,14 @@ export default function Hero() {
               {/* Testimonial */}
               <div className="bg-slate-50 rounded-2xl border border-slate-100 p-5 shadow-sm flex-1 flex flex-col justify-between gap-4">
                 <div>
-                  <div className="text-3xl text-amber-400 font-black leading-none mb-2">"</div>
-                  <p className="text-sm font-bold text-slate-800 leading-snug">
+                  <div className="mb-2">
+                    <img
+                      src="/categories_icon/Quote_icon.png"
+                      alt="Quote"
+                      className="w-20 h-20 object-contain"
+                    />
+                  </div>
+                  <p className="text-sm font-bold text-slate-900 leading-snug">
                     I sold my first-year engineering books in just two days. Much easier than posting everywhere.
                   </p>
                 </div>
@@ -490,22 +496,21 @@ export default function Hero() {
           {/* Trust Badges row */}
           <div className="mt-6 grid grid-cols-2 sm:grid-cols-5 gap-3">
             {[
-              { icon: '🛡️', label: 'Student Verified', desc: 'Only students from verified campuses.' },
-              { icon: '💬', label: 'WhatsApp Chat', desc: 'Connect with sellers instantly on WhatsApp.' },
-              { icon: '🚫', label: 'No Middleman', desc: 'You chat directly with the seller.' },
-              { icon: '🏷️', label: 'No Commission', desc: "It's completely free to buy and sell." },
-              { icon: '🔒', label: 'Safe & Trusted', desc: 'We keep the platform safe and reliable.' },
-            ].map((badge) => (
-              <div key={badge.label} className="flex items-start gap-2.5 bg-white rounded-xl border border-slate-100 p-3 shadow-sm">
-                <span className="text-xl flex-shrink-0">{badge.icon}</span>
-                <div>
-                  <p className="text-[11px] font-bold text-slate-800 leading-tight">{badge.label}</p>
-                  <p className="text-[10px] text-slate-400 font-medium leading-snug mt-0.5">{badge.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
+              { icon: "/categories_icon/Student_Verified_icon.jpeg", label: "Student Verified", desc: "Only students from verified campuses.", },
+              { icon: "/categories_icon/WhatsApp_Chat_icon.jpeg", label: "WhatsApp Chat", desc: "Connect with sellers instantly on WhatsApp.", },
+              { icon: "/categories_icon/No_Middleman_icon.jpeg", label: "No Middleman", desc: "You chat directly with the seller.", },
+              { icon: "/categories_icon/No_Commission_icon.jpeg", label: "No Commission", desc: "It's completely free to buy and sell.", },
+              { icon: "/categories_icon/Safe_&_Trusted_icon.jpeg", label: "Safe & Trusted", desc: "We keep the platform safe and reliable.", },
+            ].map((badge) => ( 
+            <div key={badge.label} 
+            className="flex items-start gap-2.5 bg-white rounded-xl border border-slate-100 p-3 shadow-sm" > 
+            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center"> 
+            <img src={badge.icon} alt={badge.label} className="w-full h-full object-contain" /> 
+            </div> 
+            <div> 
+            <p className="text-[11px] font-bold text-slate-800 leading-tight"> {badge.label} </p> 
+            <p className="text-[10px] text-slate-400 font-medium leading-snug mt-0.5"> {badge.desc} </p> 
+            </div> </div> ))} </div>
         </div>
       </section>
 
