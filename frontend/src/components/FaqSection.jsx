@@ -17,27 +17,27 @@ export default function FaqSection() {
     {
       question: "How do I buy items on MujShoppers?",
       answer:
-        "Simply browse listings, select a product, and click to chat directly with the verified student seller on WhatsApp to arrange a convenient campus pickup.",
+        "Browse the listings from the marketplace (you can access the marketplace by clicking on Shop or Start Exploring), select a product you like or need, and click to chat directly with the verified student seller on WhatsApp to arrange a convenient campus pickup and payment method.",
     },
     {
       question: "How do payments & handovers work?",
       answer:
-        "Buyers and sellers connect directly on campus to inspect items in person and complete payment via UPI, cash, or your preferred payment method.",
+        "Buyers and sellers get connected directly on Whatsapp, from which they can arrange a meet on the campus to inspect items in person and complete payment via UPI, cash, or any preferred payment method.",
     },
     {
       question: "Is it free to list and sell items?",
       answer:
-        "Yes, listing products on MujShoppers is 100% free for all students. There are zero commission fees or hidden charges.",
+        "Yes, listing products on CampusKart is 100% free for all students. There are zero commission fees or hidden charges. Everything from creating an account or purchasing a product to listing an unused item in your possession is free, we don't take any platform charges.",
     },
     {
       question: "What items can I sell on the platform?",
       answer:
-        "You can sell textbooks, calculators, electronics, study chairs, cycles, hostel essentials, clothing, sports gear, and more.",
+        "You can sell anything that's lying around your room and is relevant to a college student. Whether it be textbooks, calculators, electronics, study chairs, cycles, hostel essentials, clothing, sports gear, or any unused item.",
     },
     {
       question: "How do I verify my student profile?",
       answer:
-        "Sign up using your official college email address or upload your campus student ID in your profile settings for instant verification.",
+        "Sign up using your official outlook college email address for otp verification.",
     },
     {
       question: "Is my personal contact information safe?",
@@ -49,13 +49,6 @@ export default function FaqSection() {
   return (
     <section className="relative w-full bg-[#FAF8F3] py-20 px-4 sm:px-6 lg:px-8 overflow-hidden border-t border-[#BDD3A7]/40">
       <div className="mx-auto max-w-6xl">
-        {/* Top Eyebrow Badge */}
-        <div className="flex items-center justify-center gap-2 mb-3">
-          <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-          <span className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-700">
-            FAQs
-          </span>
-        </div>
 
         {/* Header Title */}
         <div className="text-center max-w-3xl mx-auto">
@@ -78,7 +71,7 @@ export default function FaqSection() {
           </h2>
 
           <p className="mt-5 text-xs sm:text-sm md:text-base font-medium text-slate-500 max-w-lg mx-auto leading-relaxed">
-            Here are some common questions about our platform to help you understand better.
+            Here are some common questions we recieve about our platform.
           </p>
         </div>
 
